@@ -3,6 +3,6 @@ import { AuthRoutes } from './auth.routes';
 
 export function Routes() {
     return (
-        <AppRouter/>
+        <AuthRoutes/>
     )
 }

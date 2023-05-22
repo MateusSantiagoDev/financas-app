@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Platform } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import {
   Background,
   Container,
@@ -15,10 +16,13 @@ import {
 export function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigation = useNavigation<any>();
 
   function handleSignIn() {}
 
-  function handleRoute() {}
+  function handleRoute() {
+    navigation.navigate("SignUp");
+  }
 
   return (
     <Background>
