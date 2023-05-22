@@ -40,7 +40,7 @@ export function SignIn() {
 
         <AreaInput>
           <Input
-            placeholder="Email"
+            placeholder="Password"
             autoCorrect={false}
             autoCapitalize="none"
             value={password}
