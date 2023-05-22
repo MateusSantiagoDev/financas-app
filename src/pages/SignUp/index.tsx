@@ -10,7 +10,7 @@ import {
   SubmitText,
 } from "../SignIn/styles";
 
-export function SignIn() {
+export function SignUp() {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
