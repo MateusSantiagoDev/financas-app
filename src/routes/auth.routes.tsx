@@ -22,7 +22,7 @@ export function AuthRoutes() {
             borderBottomColor: "#00b94a",
           },
           headerTintColor: "#fff",
-          headerBackTitleVisible: false,
+         headerBackTitleVisible: false, 
           headerTitle: "Voltar",
         }}
       />
