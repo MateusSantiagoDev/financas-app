@@ -16,22 +16,22 @@ export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<any>("");
   const [loading, setLoading] = useState<boolean>(true);
 
-  async function signUp(name: any, email: any, password: any) {
-    async function loadStorage() {
-      const storageUser = await AsyncStorage.getItem("Auth_user");
-      if (storageUser) {
-        // transformo novamente em json
-        setUser(JSON.parse(storageUser));
-        setLoading(false);
-      }
+  async function loadStorage() {
+    const storageUser = await AsyncStorage.getItem("Auth_user");
+    if (storageUser) {
+      // transformo novamente em json
+      setUser(JSON.parse(storageUser));
       setLoading(false);
     }
+    setLoading(false);
+  }
 
-    useEffect(() => {
-      // toda vez q renderizar busco o usuário logado no asyncStorage
-      loadStorage();
-    }, []);
+  useEffect(() => {
+    // toda vez q renderizar busco o usuário logado no asyncStorage
+    loadStorage();
+  }, []);
 
+  async function signUp(name: any, email: any, password: any) {
     // cria um usuário
     const newUser = await createUserWithEmailAndPassword(
       firebase_auth,
