@@ -24,6 +24,7 @@ export const NewLink = styled.TouchableOpacity`
 `;
 
 export const NewText = styled.Text`
+  text-align: center;
   font-size: 18px;
   color: #fff;
   font-weight: bold;

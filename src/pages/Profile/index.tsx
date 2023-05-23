@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../contexts/auth";
+import { Header } from '../../components/Header';
 import {
   Container,
   Name,
@@ -17,6 +18,7 @@ export function Profile() {
 
   return (
     <Container>
+      <Header/>
       <Name>{user && user.name.name}</Name>
 
       <NewLink onPress={() => navigation.navigate("Register")}>

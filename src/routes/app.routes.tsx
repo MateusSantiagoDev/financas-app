@@ -24,7 +24,13 @@ export function AppRouter() {
         },
       }}
     >
-      <AppDrawer.Screen name="Home" component={Home} />
+      <AppDrawer.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerShown: false,
+        }}
+      />
       <AppDrawer.Screen
         name="Register"
         component={New}
