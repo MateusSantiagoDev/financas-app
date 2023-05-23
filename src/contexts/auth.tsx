@@ -11,15 +11,38 @@ import {
 } from "../services/firebaseConfig";
 
 export const AuthContext = createContext({});
-const [user, setUser] = useState<string>('');
-const [loading, setLoading] = useState<boolean>(true);
 
 export function AuthProvider({ children }: any) {
-    return (
-        // transformando o user em boolean (!!user)
-        <AuthContext.Provider value={{ signed: !!user, loading, user }}>
-            { children }
-        </AuthContext.Provider>
-    )
+  const [user, setUser] = useState<any>("");
+  const [loading, setLoading] = useState<boolean>(true);
+
+  async function signUp({ name, email, password }: any) {
+    // cria um usuário
+    const newUser = await createUserWithEmailAndPassword(
+      firebase_auth,
+      email,
+      password
+    );
+    if (newUser) {
+      // cria uma collection com o id personalizado
+      await setDoc(doc(firebase_db, "users", newUser.user.uid), {
+        saldo: 0,
+        name: name,
+      });
+
+      const data: any = {
+        uid: newUser.user.uid,
+        name: name,
+        email: newUser.user.email,
+      };
+      setUser(data);
+    }
+  }
+
+  return (
+    // transformando o user em boolean (!!user)
+    <AuthContext.Provider value={{ signed: !!user, loading, user, signUp }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
- 

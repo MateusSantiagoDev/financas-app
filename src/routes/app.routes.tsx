@@ -1,7 +1,7 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createStackNavigator } from "@react-navigation/stack";
 import { Home } from "../pages/Home";
 
-const AppDrawer = createDrawerNavigator();
+const AppDrawer = createStackNavigator();
 
 export function AppRouter() {
   return (
