@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Platform } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../contexts/auth";
 import {
   Background,
   Container,
@@ -17,8 +18,11 @@ export function SignIn() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigation = useNavigation<any>();
+  const { signIn } = useContext<any>(AuthContext);
 
-  function handleSignIn() {}
+  function handleSignIn() {
+    signIn(email, password);
+  }
 
   function handleRoute() {
     navigation.navigate("SignUp");

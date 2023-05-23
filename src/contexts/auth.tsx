@@ -16,7 +16,22 @@ export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<any>("");
   const [loading, setLoading] = useState<boolean>(true);
 
-  async function signUp({ name, email, password }: any) {
+  async function signUp(name: any, email: any, password: any) {
+    async function loadStorage() {
+      const storageUser = await AsyncStorage.getItem("Auth_user");
+      if (storageUser) {
+        // transformo novamente em json
+        setUser(JSON.parse(storageUser));
+        setLoading(false);
+      }
+      setLoading(false);
+    }
+
+    useEffect(() => {
+      // toda vez q renderizar busco o usuário logado no asyncStorage
+      loadStorage();
+    }, []);
+
     // cria um usuário
     const newUser = await createUserWithEmailAndPassword(
       firebase_auth,
@@ -36,12 +51,42 @@ export function AuthProvider({ children }: any) {
         email: newUser.user.email,
       };
       setUser(data);
+      storageUser(data);
     }
+  }
+
+  async function signIn(email: any, password: any) {
+    const user = await signInWithEmailAndPassword(
+      firebase_auth,
+      email,
+      password
+    );
+    const userName = await getDoc(doc(firebase_db, `users/${user.user.uid}`));
+
+    const data: any = {
+      uid: user.user.uid,
+      name: userName.data(),
+    };
+    setUser(data);
+    storageUser(data);
+  }
+
+  async function storageUser(data: any) {
+    // transformo em string
+    await AsyncStorage.setItem("Auth_user", JSON.stringify(data));
+  }
+
+  async function signOut() {
+    await firebase_auth.signOut();
+    await AsyncStorage.clear();
+    setUser("");
   }
 
   return (
     // transformando o user em boolean (!!user)
-    <AuthContext.Provider value={{ signed: !!user, loading, user, signUp }}>
+    <AuthContext.Provider
+      value={{ signed: !!user, loading, user, signUp, signIn, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

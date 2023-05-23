@@ -18,7 +18,7 @@ export function SignUp() {
   const { signUp } = useContext<any>(AuthContext);
 
   function handleSignUp() {
-    signUp(name, email, password);    
+   signUp(name, email, password);    
   }
 
   return (
@@ -27,8 +27,6 @@ export function SignUp() {
         behavior={Platform.OS === "ios" ? "pading" : undefined}
         enabled
       >
-        <Logo source={require("../../assets/logo.png")} />
-
         <AreaInput>
           <Input
             placeholder="Name"
