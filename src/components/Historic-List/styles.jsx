@@ -33,3 +33,15 @@ export const ValorText = styled.Text`
   font-size: 22px;
   font-weight: bold;
 `;
+
+export const ValueArea = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const DateText = styled.Text`
+  font-style: italic;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+`;

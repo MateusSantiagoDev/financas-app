@@ -66,8 +66,19 @@ export function AuthProvider({ children }: any) {
         storageUser(data);
         setLoadingAuth(false);
       }
-    } catch (error) {
-      alert(error);
+    } catch (err: any) {
+      if (err.code === "auth/invalid-email") {
+        alert("email invalido");
+      }
+      if (err.code === "auth/missing-password") {
+        alert("senha invalida");
+      }
+      if (err.code === "auth/weak-password") {
+        alert("A senha deve ter pelo menos 6 caracteres");
+      }
+      if (err.code === "auth/email-already-in-use") {
+        alert("email já esta em uso");
+      }
       setLoadingAuth(false);
     }
   }
@@ -91,8 +102,16 @@ export function AuthProvider({ children }: any) {
       setSaldoUser(data.name.saldo);
       storageUser(data);
       setLoadingAuth(false);
-    } catch (error) {
-      alert(error);
+    } catch (err: any) {
+      if (err.code === "auth/invalid-email") {
+        alert("Email invalido!");
+      }
+      if (err.code === "auth/missing-password") {
+        alert("Informe a senha!");
+      }
+      if (err.code === "auth/wrong-password") {
+        alert("Senha invalida!");
+      }
       setLoadingAuth(false);
     }
   }
