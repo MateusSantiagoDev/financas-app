@@ -14,12 +14,11 @@ import {
 export function Profile() {
   const { user, signOut } = useContext<any>(AuthContext);
   const navigation = useNavigation<any>();
-  console.log("valores", user)
 
   return (
     <Container>
       <Header/>
-      <Name>{user && user.name.name}</Name>
+      <Name>{user && user.name.name || user.name}</Name>
 
       <NewLink onPress={() => navigation.navigate("Register")}>
         <NewText>Registar gastos</NewText>

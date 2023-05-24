@@ -3,6 +3,7 @@ import { Container, Type, IconView, TypeText, ValorText } from "./styles";
 /* import { Historic } from "../../pages/Home";  */
 
 export function HistoricList({ data }: any) {
+  console.log("dadadadad", data)
   return (
     <Container>
       <Type>

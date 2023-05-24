@@ -1,7 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import {
+  collection,
+  onSnapshot,
+  firebase_db,
+  orderBy,
+  query,
+} from "../../services/firebaseConfig";
 import { AuthContext } from "../../contexts/auth";
 import { Header } from "../../components/Header";
-import { HistoricList } from '../../components/Historic-List'
+import { HistoricList } from "../../components/Historic-List";
 import { Background, Container, Name, Saldo, Title, List } from "./styles";
 
 export interface Historic {
@@ -10,24 +17,40 @@ export interface Historic {
   value: number;
 }
 export function Home() {
-  const { user } = useContext<any>(AuthContext);
-  const [historic, setHistoric] = useState<Historic[]>([
-    { id: "1", type: "receita", value: 1200 },
-    { id: "2", type: "despesa", value: 300 },
-    { id: "3", type: "receita", value: 40 },
-    { id: "4", type: "despesa", value: 89.65 },
-    { id: "5", type: "receita", value: 20.23 },
-    { id: "6", type: "receita", value: 800.65 },
-    { id: "7", type: "receita", value: 8.65 },
-    { id: "8", type: "despesa", value: 47.51 },
-  ]);
+  const { user, saldoUser } = useContext<any>(AuthContext);
+  const [historic, setHistoric] = useState<Historic[]>([]);
+  console.log("logouuu", saldoUser)
+
+  useEffect(() => {
+    async function loadHistoric() {
+      const historicRef = query(collection(firebase_db, "historic"), orderBy("date"))
+
+      const unsubscribe = onSnapshot(historicRef, (snapshot) => {
+        const historicData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          type: doc.data().type,
+          value: doc.data().value,
+          userId: doc.data().userId,
+          date: doc.data().date.date,
+        }));  // .reverse() mostrar o ultimo criado no topo
+        
+        const userHistoric = historicData.filter((h) => h.userId == user.uid);
+        console.log("Hist", userHistoric)
+        setHistoric(userHistoric);
+      });
+      
+      return () => unsubscribe();
+    }
+  
+    loadHistoric();
+  }, []);
 
   return (
     <Background>
       <Header />
       <Container>
-        <Name>{user && user.name.name}</Name>
-        <Saldo>R$ {user && user.name.saldo}</Saldo>
+        <Name>{(user && user.name.name) || user.name}</Name>
+        <Saldo>R$ {saldoUser ? saldoUser.toFixed(2) : 0}</Saldo>
       </Container>
 
       <Title>Ultimas movimentações</Title>
@@ -36,7 +59,7 @@ export function Home() {
         showsVerticalScrollIndicator={false}
         data={historic}
         keyExtractor={(item: Historic) => item.id}
-        renderItem={({ item }: any) => (<HistoricList data={item}/>)}
+        renderItem={({ item }: any) => <HistoricList data={item} />}
       />
     </Background>
   );

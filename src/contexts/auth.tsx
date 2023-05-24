@@ -1,4 +1,6 @@
 import { useState, useEffect, createContext } from "react";
+import { Keyboard } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   firebase_auth,
@@ -6,6 +8,9 @@ import {
   setDoc,
   doc,
   getDoc,
+  addDoc,
+  updateDoc,
+  collection,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "../services/firebaseConfig";
@@ -14,7 +19,10 @@ export const AuthContext = createContext({});
 
 export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<any>("");
+  const [saldoUser, setSaldoUser] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingAuth, setLoadingAuth] = useState(false);
+  const navigation = useNavigation<any>();
 
   async function loadStorage() {
     const storageUser = await AsyncStorage.getItem("Auth_user");
@@ -32,43 +40,61 @@ export function AuthProvider({ children }: any) {
   }, []);
 
   async function signUp(name: any, email: any, password: any) {
-    // cria um usuário
-    const newUser = await createUserWithEmailAndPassword(
-      firebase_auth,
-      email,
-      password
-    );
-    if (newUser) {
-      // cria uma collection com o id personalizado
-      await setDoc(doc(firebase_db, "users", newUser.user.uid), {
-        saldo: 0,
-        name: name,
-      });
+    try {
+      setLoadingAuth(true);
+      // cria um usuário
+      const newUser = await createUserWithEmailAndPassword(
+        firebase_auth,
+        email,
+        password
+      );
+      if (newUser) {
+        // cria uma collection com o id personalizado
+        await setDoc(doc(firebase_db, "users", newUser.user.uid), {
+          saldo: 0,
+          name: name,
+        });
 
-      const data: any = {
-        uid: newUser.user.uid,
-        name: name,
-        email: newUser.user.email,
-      };
-      setUser(data);
-      storageUser(data);
+        const data: any = {
+          uid: newUser.user.uid,
+          name: name,
+          saldo: 0,
+          email: newUser.user.email,
+        };
+        setSaldoUser(0);
+        setUser(data);
+        storageUser(data);
+        setLoadingAuth(false);
+      }
+    } catch (error) {
+      alert(error);
+      setLoadingAuth(false);
     }
   }
 
   async function signIn(email: any, password: any) {
-    const user = await signInWithEmailAndPassword(
-      firebase_auth,
-      email,
-      password
-    );
-    const userName = await getDoc(doc(firebase_db, `users/${user.user.uid}`));
+    try {
+      setLoadingAuth(true);
+      const user = await signInWithEmailAndPassword(
+        firebase_auth,
+        email,
+        password
+      );
+      const userName = await getDoc(doc(firebase_db, `users/${user.user.uid}`));
 
-    const data: any = {
-      uid: user.user.uid,
-      name: userName.data(),
-    };
-    setUser(data);
-    storageUser(data);
+      const data: any = {
+        uid: user.user.uid,
+        name: userName.data(),
+      };
+
+      setUser(data);
+      setSaldoUser(data.name.saldo);
+      storageUser(data);
+      setLoadingAuth(false);
+    } catch (error) {
+      alert(error);
+      setLoadingAuth(false);
+    }
   }
 
   async function storageUser(data: any) {
@@ -82,10 +108,53 @@ export function AuthProvider({ children }: any) {
     setUser("");
   }
 
+  async function historic(
+    user: any,
+    type: any,
+    value: any,
+    date: any,
+    setValue: any
+  ) {
+    await addDoc(collection(firebase_db, "historic"), {
+      type: type,
+      value: value,
+      date: date,
+      userId: user,
+    });
+    const isUser = await getDoc(doc(firebase_db, `users/${user}`));
+    const userData: any = {
+      saldo: isUser.data(),
+    };
+
+    let saldo = userData.saldo.saldo;
+
+    type === "despesa"
+      ? (saldo -= parseFloat(value))
+      : (saldo += parseFloat(value));
+
+    await updateDoc(doc(firebase_db, "users", user), {
+      saldo,
+    });
+    setValue("");
+    Keyboard.dismiss();
+    navigation.navigate("Home");
+    setSaldoUser(saldo);
+  }
+
   return (
     // transformando o user em boolean (!!user)
     <AuthContext.Provider
-      value={{ signed: !!user, loading, user, signUp, signIn, signOut }}
+      value={{
+        signed: !!user,
+        loading,
+        user,
+        signUp,
+        signIn,
+        signOut,
+        historic,
+        saldoUser,
+        loadingAuth,
+      }}
     >
       {children}
     </AuthContext.Provider>
