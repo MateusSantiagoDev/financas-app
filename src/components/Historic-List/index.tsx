@@ -1,10 +1,13 @@
+import { TouchableWithoutFeedback } from 'react-native';
 import { AntDesign } from "@expo/vector-icons";
 import { Container, Type, IconView, TypeText, ValorText, ValueArea, DateText } from "./styles";
 /* import { Historic } from "../../pages/Home";  */
 
-export function HistoricList({ data }: any) {
-  console.log("dadadadad", data)
+// TouchableWithoutFeedback: pega o evento quando clicar e segurar
+export function HistoricList({ data, deleteItem }: any) {
+
   return (
+    <TouchableWithoutFeedback onLongPress={() => deleteItem(data)}>
     <Container>
       <Type>
         <IconView typeProps={data.type}>
@@ -21,5 +24,6 @@ export function HistoricList({ data }: any) {
       <DateText>{data.date}</DateText>
       </ValueArea>
     </Container>
+    </TouchableWithoutFeedback>
   );
 }

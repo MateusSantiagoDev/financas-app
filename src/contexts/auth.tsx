@@ -172,6 +172,7 @@ export function AuthProvider({ children }: any) {
         signOut,
         historic,
         saldoUser,
+        setSaldoUser,
         loadingAuth,
       }}
     >
