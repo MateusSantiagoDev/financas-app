@@ -34,7 +34,9 @@ export function SignIn() {
         behavior={Platform.OS === "ios" ? "pading" : undefined}
         enabled
       >
-        <Logo source={require("../../assets/logo.png")} />
+        <Logo 
+        resizeMode="contain" 
+        source={require("../../assets/logo.png")} />
 
         <AreaInput>
           <Input
