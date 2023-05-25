@@ -118,9 +118,8 @@ export function Home() {
 
   function onChange(date: any) { // recebo a data selecionada
     // se for igual a ios não vou fechar pois vai fechar no button
-    setShow(Platform.OS === "ios");
+    setShow(Platform.OS === "ios"); // true
     setCurrentDate(date);
-    console.log(date);
   }
 
   return (

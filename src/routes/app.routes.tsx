@@ -2,12 +2,17 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Home } from "../pages/Home";
 import { New } from "../pages/New";
 import { Profile } from "../pages/Profile";
+import { CustomDrawer } from '../components/CustomDrawer';
 
 const AppDrawer = createDrawerNavigator();
 
+//drawerContent= indicando que voui charam um drawer personalizado
+// <CustomDrawer {...props}/> passando todas as 
+// propriedades para o drawer personalizado
 export function AppRouter() {
   return (
     <AppDrawer.Navigator
+    drawerContent={ (props) => <CustomDrawer {...props}/>}
       screenOptions={{
         drawerStyle: {
           backgroundColor: "#171717",

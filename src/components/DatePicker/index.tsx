@@ -4,12 +4,8 @@ import { useState } from "react";
 import { Container, Header } from "./styles";
 
 export function DatePicker({ date, onClose, onChange }: any) {
-    const [dateNow, setDateNow] = useState<any>(new Date(date));
-    
-    
-    
-    console.log("data atual", date)
-   console.log("data do state", dateNow);
+  const [dateNow, setDateNow] = useState<any>(new Date(date));
+
   return (
     <Container>
       {Platform.OS === "ios" && (
@@ -23,10 +19,11 @@ export function DatePicker({ date, onClose, onChange }: any) {
         value={dateNow} // data atual
         mode="date"
         display="default"
-        onChange={(event, date) => { // date = data selecionada
+        onChange={(event, date) => {
+          // date = data selecionada
           const currentDate = date || dateNow;
           setDateNow(currentDate);
-          onChange(currentDate); 
+          onChange(currentDate);
         }}
         style={{ backgroundColor: "white" }}
       />
